@@ -10,6 +10,7 @@ public class KartBrain : Agent
 {
     public CheckpointManager _checkpointManager;
     private KartControllerAI _kartController;
+    public bool IsColliding = false;
 
     public override void Initialize()
     {
@@ -58,6 +59,7 @@ public class KartBrain : Agent
         //AddReward(-0.01f);
     }
 
+    
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         int forwardAction = 0;

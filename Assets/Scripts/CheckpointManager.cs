@@ -11,6 +11,7 @@ public class CheckpointManager : MonoBehaviour
     public float TimeLeft = 30f;
 
     int laps = 6;
+    public bool IsColliding = false;
 
     public KartBrain kartAgent;
     public Checkpoint nextCheckPointToReach;
@@ -50,7 +51,11 @@ public class CheckpointManager : MonoBehaviour
 
     public void CheckPointReached(Checkpoint checkpoint)
     {
-        if (nextCheckPointToReach != checkpoint) return;
+        if (nextCheckPointToReach != checkpoint)
+        {
+            kartAgent.AddReward(-0.5f);
+            return;
+        }
 
         lastCheckpoint = Checkpoints[CurrentCheckpointIndex];
         reachedCheckpoint?.Invoke(checkpoint);
@@ -75,9 +80,14 @@ public class CheckpointManager : MonoBehaviour
         if (collision.gameObject.CompareTag("Wall"))
         {
             kartAgent.AddReward(-1f);
-
+            //Debug.Log("collided with wall " + transform.parent.name);
+            IsColliding = true;
         }
-        if(collision.gameObject.CompareTag("notTrack"))
+        else
+        {
+            IsColliding = false;
+        }
+        if (collision.gameObject.CompareTag("notTrack"))
         {
             kartAgent.AddReward(-1f);
             kartAgent.EndEpisode();
@@ -89,8 +99,10 @@ public class CheckpointManager : MonoBehaviour
         if (collision.gameObject.CompareTag("Wall"))
         {
             kartAgent.AddReward(-0.5f);
+            //Debug.Log("sticking to wall " + transform.parent.name);
         }
     }
+
 
 
     private void SetNextCheckpoint()
